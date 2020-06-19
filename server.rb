@@ -10,7 +10,7 @@ class Server
     @server        = @server_socket
     @clients       = {}
     puts 'Started server.........'
-    puts "Connection Live to port #{socket_port}"
+    puts "Connection Live to port #{socket_address}"
     run
   end
 
