@@ -1,13 +1,20 @@
 require 'socket'
+require 'dotenv'
 require 'securerandom'
 require 'typhoeus'
 require 'pry'
+require 'socksify'
+
+Dotenv.load
 
 
 class Client
-  def initialize(socket)
-    @socket          = socket
-    @name            = 'hello'
+  def initialize(host = ENV['HOST'] || 'localhost', port = ENV['PORT'] || 8080, local_port = 3000)
+    @host            = host
+    @port            = port
+    @socket          = TCPSocket.open(@host, port)
+    @local_port      = local_port
+    @name            =  'hello' #SecureRandom.hex(5)
     @request_object  = send_request
     @response_object = listen_response
 
@@ -17,9 +24,11 @@ class Client
 
   def send_request
     puts "Established a connection with server..."
+    puts parse_url
+    puts "Your client to connected to port #{@local_port}"
     begin
       Thread.new do
-        @socket.puts @name
+        @socket.puts "CLIENT:#{@name}"
       end
     rescue IOError => e
       puts e.message
@@ -33,9 +42,9 @@ class Client
     begin
       Thread.new do
         loop do
-          method       = @socket.gets.chomp
-          path         = @socket.gets.chomp
-          content_type = @socket.gets.chomp
+          method       = @socket.gets&.chomp
+          path         = @socket.gets&.chomp
+          content_type = @socket.gets&.chomp
           body         = []
 
           while line = @socket.gets
@@ -44,16 +53,20 @@ class Client
           end
 
           body = body.join
-          puts content_type
+          puts "#{method} PATH: #{path} TYPE:#{content_type}"
 
-          request = Typhoeus::Request.new(
-              "localhost:9000#{path}",
-              method: method.downcase.to_sym,
-              body:   body,
-              headers: {'Content-Type' => content_type}
-          )
-          res     = request.run
-          @socket.sendmsg res.response_body
+          if method.is_a?(String) && path.is_a?(String)
+            request = Typhoeus::Request.new(
+                "127.0.0.1:#{@local_port}#{path}",
+                method:  method.downcase.to_sym,
+                body:    body,
+                headers: {'Content-Type' => content_type}
+            )
+            res = request.run
+            @socket.sendmsg res.response_body
+          else
+            @socket.sendmsg 'Not found'
+          end
 
         end
       end
@@ -64,11 +77,12 @@ class Client
     end
   end
 
-  def parse_data
-
+  def parse_url
+    if @host == 'localhost'
+      "Your URL is http://#{@name}.#{@host}:#{@port}"
+    else
+      "Your URL is http://#{@name}.action-tunnel.ml"
+    end
   end
 end
-
-
-socket = TCPSocket.open("localhost", 8080)
-Client.new(socket)
+Client.new
