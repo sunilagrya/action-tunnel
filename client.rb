@@ -54,6 +54,7 @@ class Client
                 body:    body,
                 headers: {'Content-Type' => content_type}
             )
+            binding.pry
             res     = request.run
             @socket.sendmsg res.response_body
           else
@@ -80,5 +81,6 @@ end
 # TCPSocket::socks_username = proxy_uri.user
 # TCPSocket::socks_password = proxy_uri.password
 
-socket = TCPSocket.new('sleepy-wave-89623.herokuapp.com', 80)
+Addrinfo.tcp("action-tunnel.el.r.appspot.com", 8080)
+socket = TCPSocket.open('action-tunnel.el.r.appspot.com', 8080)
 Client.new(socket)
