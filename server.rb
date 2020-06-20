@@ -95,5 +95,4 @@ class Server
 
 
 end
-
-Server.new(8080, "localhost")
+Server.new(ENV['PORT'] || 8080, "localhost")
