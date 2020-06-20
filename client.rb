@@ -2,6 +2,7 @@ require 'socket'
 require 'securerandom'
 require 'typhoeus'
 require 'pry'
+require 'socksify'
 
 
 class Client
@@ -33,9 +34,9 @@ class Client
     begin
       Thread.new do
         loop do
-          method       = @socket.gets.chomp
-          path         = @socket.gets.chomp
-          content_type = @socket.gets.chomp
+          method       = @socket.gets&.chomp
+          path         = @socket.gets&.chomp
+          content_type = @socket.gets&.chomp
           body         = []
 
           while line = @socket.gets
@@ -46,14 +47,18 @@ class Client
           body = body.join
           puts content_type
 
-          request = Typhoeus::Request.new(
-              "localhost:3000#{path}",
-              method: method.downcase.to_sym,
-              body:   body,
-              headers: {'Content-Type' => content_type}
-          )
-          res     = request.run
-          @socket.sendmsg res.response_body
+          if method.is_a?(String) && path.is_a?(String)
+            request = Typhoeus::Request.new(
+                "localhost:3000#{path}",
+                method:  method.downcase.to_sym,
+                body:    body,
+                headers: {'Content-Type' => content_type}
+            )
+            res     = request.run
+            @socket.sendmsg res.response_body
+          else
+            @socket.sendmsg 'Not found'
+          end
 
         end
       end
@@ -69,6 +74,11 @@ class Client
   end
 end
 
+# proxy_uri = URI.parse("socks://#{FIXIE_SOCKS_HOST}")
+# TCPSocket::socks_server = proxy_uri.host
+# TCPSocket::socks_port = proxy_uri.port
+# TCPSocket::socks_username = proxy_uri.user
+# TCPSocket::socks_password = proxy_uri.password
 
-socket = TCPSocket.open('54.144.58.175', 8080)
+socket = TCPSocket.new('sleepy-wave-89623.herokuapp.com', 80)
 Client.new(socket)
