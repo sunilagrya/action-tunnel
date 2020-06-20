@@ -29,6 +29,6 @@ resources:
   disk_size_gb: 10
 network:
   forwarded_ports:
-    - 8080/tcp
+    - 2222/tcp
 
 # [END gae_flex_quickstart_yaml]
