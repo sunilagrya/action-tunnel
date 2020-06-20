@@ -1,1 +1,1 @@
-web: bundle exec ruby server_control.rb run
+web: bundle exec rake server_control.rb start
