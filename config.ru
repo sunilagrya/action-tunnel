@@ -1,2 +1,2 @@
 require './server'
-Server.new(ENV["PORT"] || 8080, "localhost")
+run Server.new(ENV["PORT"] || 8080, "localhost")
