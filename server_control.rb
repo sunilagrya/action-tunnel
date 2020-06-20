@@ -5,10 +5,7 @@ file = pwd + '/server.rb'
 
 Daemons.run_proc(
     'action-tunnel', # name of daemon
-    #  :dir_mode => :normal
-     :dir => File.join(pwd, '/tmp/pids'), # directory where pid file will be stored
-    #  :backtrace => true,
-    #  :monitor => true,
+    :no_pidfiles   => true,
     :log_output => true
 ) do
   exec "ruby #{file}"
