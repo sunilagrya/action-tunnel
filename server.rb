@@ -95,3 +95,5 @@ class Server
 
 
 end
+
+Server.new(8080, "localhost")
