@@ -16,7 +16,7 @@ class Client
   end
 
   def send_request
-    puts "Established a connection with server..."
+    puts "Established a connection with server #{@name}..."
     begin
       Thread.new do
         @socket.puts @name
@@ -47,7 +47,7 @@ class Client
           puts content_type
 
           request = Typhoeus::Request.new(
-              "localhost:9000#{path}",
+              "localhost:3000#{path}",
               method: method.downcase.to_sym,
               body:   body,
               headers: {'Content-Type' => content_type}
