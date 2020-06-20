@@ -1,7 +1,9 @@
 require 'socket'
 require 'pry'
+require 'rack'
 require 'rack/utils'
 require 'rack/multipart'
+require 'rack/lobster'
 
 
 class Server
@@ -57,8 +59,20 @@ class Server
       response = client.recvmsg.first
       respond_back(conn, 200, response, content_type)
     else
-      respond_back(conn, 302, 'Server not found', content_type)
+      show_lobster(conn)
     end
+  end
+
+  def show_lobster(conn)
+    arr = Rack::Lobster.new.call('REQUEST_METHOD' => 'GET')
+    data = arr[2][0..3].join.gsub('Lobstericious', 'Action Tunnel')
+    res = "HTTP/1.1 #{200}\r\n" +
+        "Content-Type: #{'text/html'}\r\n" +
+        "Content-Length: #{data.size}\r\n" +
+        "\r\n" +
+        "#{data}\r\n"
+    conn.write(res)
+    conn.close
   end
 
   def respond_back(conn, status_code, data, content_type)
@@ -68,7 +82,6 @@ class Server
         "\r\n" +
         "#{data}\r\n"
     conn.write(res)
-
     conn.close
   end
 
