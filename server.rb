@@ -95,4 +95,6 @@ class Server
 
 
 end
+puts ENV['PORT']
+puts ENV['$PORT']
 Server.new(ENV['PORT'] || 8080, "localhost")
