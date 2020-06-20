@@ -70,5 +70,5 @@ class Client
 end
 
 
-socket = TCPSocket.open("localhost", 8080)
+socket = TCPSocket.open("https://sleepy-wave-89623.herokuapp.com", 8080)
 Client.new(socket)
