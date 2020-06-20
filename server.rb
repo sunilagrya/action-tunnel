@@ -7,12 +7,12 @@ require 'rack/lobster'
 
 
 class Server
-  def initialize(socket_address, socket_port)
-    @server_socket = TCPServer.open(socket_port, socket_address)
+  def initialize(socket_port)
+    @server_socket = TCPServer.new(socket_port)
     @server        = @server_socket
     @clients       = {}
     puts 'Started server.........'
-    puts "Connection Live to port #{socket_address}"
+    puts "Connection Live to port #{socket_port}"
     run
   end
 
