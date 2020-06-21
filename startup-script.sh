@@ -61,7 +61,7 @@ systemctl restart nginx.service
 cat >/etc/supervisor/conf.d/rubyapp.conf << EOF
 [program:rubyapp]
 directory=/opt/app/action-tunnel
-command=bash -lc "bundle exec ruby app.rb"
+command=bash -lc "bundle exec rackup config.ru"
 autostart=true
 autorestart=true
 user=rubyapp
