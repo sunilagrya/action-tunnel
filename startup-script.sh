@@ -39,7 +39,7 @@ EOF
 su -l rubyapp -c "gem install bundler"
 
 # Fetch source code
-git clone https://github.com/sunilagrya/action-tunnel.git /opt/app
+git clone https://github.com/sunilagrya/action-tunnel.git /opt/app/action-tunnel
 
 # Set ownership to newly created account
 chown -R rubyapp:rubyapp /opt/app
