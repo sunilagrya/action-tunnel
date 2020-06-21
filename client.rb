@@ -81,6 +81,6 @@ end
 # TCPSocket::socks_username = proxy_uri.user
 # TCPSocket::socks_password = proxy_uri.password
 
-Addrinfo.tcp("action-tunnel.el.r.appspot.com", 8080)
-socket = TCPSocket.open('action-tunnel.el.r.appspot.com', 8080)
+# Addrinfo.tcp("action-tunnel.el.r.appspot.com", 8080)
+socket = TCPSocket.open('35.202.204.150', 80)
 Client.new(socket)

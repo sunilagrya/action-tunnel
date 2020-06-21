@@ -26,9 +26,8 @@ gcloud compute instances create $MY_INSTANCE_NAME \
 # [END getting_started_gce_create_instance]
 
 # [START getting_started_gce_allow_port]
-gcloud compute firewall-rules create default-allow-http-80 \
-    --allow tcp:80 \
+gcloud compute firewall-rules create default-allow-http-2222 \
+    --allow tcp:2222 \
     --source-ranges 0.0.0.0/0 \
-    --target-tags http-server \
-    --description "Allow port 80 access to http-server"
+    --description "Allow port 222 access to http-server"
 # [END getting_started_gce_allow_port]
