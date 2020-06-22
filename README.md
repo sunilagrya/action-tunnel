@@ -15,6 +15,7 @@ Your client to connected to port 3000
 Now the client request has been established. You can try the below command to hit port 3000<br />
 `curl hello.localhost:8080`
 
+Note: In local this will work in Postman or curl. It won't work on browser because **subdomain** is not valid domain. You can add your local url to `/etc/hosts` it will work.
 
 ____
 To run in production

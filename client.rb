@@ -1,14 +1,20 @@
 require 'socket'
+require 'dotenv'
 require 'securerandom'
 require 'typhoeus'
 require 'pry'
 require 'socksify'
 
+Dotenv.load
+
 
 class Client
-  def initialize(socket)
-    @socket          = socket
-    @name            = 'hello'
+  def initialize(host = ENV['HOST'] || 'localhost', port = ENV['PORT'] || 8080, local_port = 3000)
+    @host            = host
+    @port            = port
+    @socket          = TCPSocket.open(@host, port)
+    @local_port      = local_port
+    @name            =  'hello' #SecureRandom.hex(5)
     @request_object  = send_request
     @response_object = listen_response
 
@@ -17,10 +23,12 @@ class Client
   end
 
   def send_request
-    puts "Established a connection with server #{@name}..."
+    puts "Established a connection with server..."
+    puts parse_url
+    puts "Your client to connected to port #{@local_port}"
     begin
       Thread.new do
-        @socket.puts @name
+        @socket.puts "CLIENT:#{@name}"
       end
     rescue IOError => e
       puts e.message
@@ -45,17 +53,16 @@ class Client
           end
 
           body = body.join
-          puts content_type
+          puts "#{method} PATH: #{path} TYPE:#{content_type}"
 
           if method.is_a?(String) && path.is_a?(String)
             request = Typhoeus::Request.new(
-                "localhost:3000#{path}",
+                "127.0.0.1:#{@local_port}#{path}",
                 method:  method.downcase.to_sym,
                 body:    body,
                 headers: {'Content-Type' => content_type}
             )
-            binding.pry
-            res     = request.run
+            res = request.run
             @socket.sendmsg res.response_body
           else
             @socket.sendmsg 'Not found'
@@ -70,10 +77,12 @@ class Client
     end
   end
 
-  def parse_data
-
+  def parse_url
+    if @host == 'localhost'
+      "Your URL is http://#{@name}.#{@host}:#{@port}"
+    else
+      "Your URL is http://#{@name}.#{@host}"
+    end
   end
 end
-
-socket = TCPSocket.open('68.183.88.134', 3000)
-Client.new(socket)
+Client.new

@@ -25,7 +25,8 @@ class Server
         req = conn.gets
         unless req.is_a?(NilClass)
           conn_name, path = req.split
-          if conn_name == 'hello'
+          if conn_name.start_with?('CLIENT')
+            conn_name = conn_name.split(':').last
             client_request(conn, conn_name)
           else
             http_request(conn, conn_name, path)
@@ -50,23 +51,28 @@ class Server
 
   def connect_to_client(method, path, body, client_id, conn, content_type)
     if @clients.keys.include?(client_id)
-      client = @clients[client_id]
-      client.puts(method)
-      client.puts(path)
-      client.puts(content_type || 'text/html')
-      client.puts(body)
-      client.puts("end")
-      response = client.recvmsg.first
-      respond_back(conn, 200, response, content_type)
+      begin
+        client = @clients[client_id]
+        client.puts(method)
+        client.puts(path)
+        client.puts(content_type || 'text/html')
+        client.puts(body)
+        client.puts("end")
+        response = client.recvmsg.first
+        respond_back(conn, 200, response, content_type)
+      rescue
+        @clients.delete(client_id)
+        show_lobster(conn)
+      end
     else
       show_lobster(conn)
     end
   end
 
   def show_lobster(conn)
-    arr = Rack::Lobster.new.call('REQUEST_METHOD' => 'GET')
+    arr  = Rack::Lobster.new.call('REQUEST_METHOD' => 'GET')
     data = arr[2][0..3].join.gsub('Lobstericious', 'Action Tunnel')
-    res = "HTTP/1.1 #{200}\r\n" +
+    res  = "HTTP/1.1 #{200}\r\n" +
         "Content-Type: #{'text/html'}\r\n" +
         "Content-Length: #{data.size}\r\n" +
         "\r\n" +
@@ -108,4 +114,5 @@ class Server
 
 
 end
-Server.new(8080)
+
+Server.new(ENV['PORT'] || 8080)

@@ -1,4 +1,7 @@
 require 'daemons'
+require 'dotenv'
+
+Dotenv.load
 
 pwd  = File.dirname(File.expand_path(__FILE__))
 file = pwd + '/server.rb'
