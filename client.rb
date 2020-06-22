@@ -75,12 +75,5 @@ class Client
   end
 end
 
-# proxy_uri = URI.parse("socks://#{FIXIE_SOCKS_HOST}")
-# TCPSocket::socks_server = proxy_uri.host
-# TCPSocket::socks_port = proxy_uri.port
-# TCPSocket::socks_username = proxy_uri.user
-# TCPSocket::socks_password = proxy_uri.password
-
-# Addrinfo.tcp("action-tunnel.el.r.appspot.com", 8080)
-socket = TCPSocket.open('35.202.204.150', 80)
+socket = TCPSocket.open('68.183.88.134', 3000)
 Client.new(socket)
