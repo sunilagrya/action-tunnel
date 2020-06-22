@@ -1,14 +1,14 @@
-#Action Tunnel
+# Action Tunnel
 
 To run this locally
 
-####Server
+#### Server
 
 `bundle exec ruby server_control.rb run`<br />
 It will start your server in port **8080**<br />
 Try this by
 `curl localhost:8080`
-####Client
+#### Client
 
 `ruby client.rb`<br />
  This will start your client<br />
@@ -26,18 +26,18 @@ To run in production
 
 You can create aws or digital ocean VPS
 
-####Server
+#### Server
 
 `bundle exec ruby server_control.rb start`<br />
 It will start your server in port **8080**<br />
 Try this by
 `curl SERVERIP:8080`
 
-####Nginx Config
+#### Nginx Config
 
 _See **rubyapp.conf** file_
 
-####Client
+#### Client
 
 Put your **SERVERIP** in client.rb and run the client file to connect to your server
 
