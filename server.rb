@@ -25,7 +25,11 @@ class Server
         req = conn.gets
         unless req.is_a?(NilClass)
           conn_name, path = req.split
-          if conn_name.start_with?('CLIENT')
+          if conn_name.start_with?('CLIENT') || conn_name.start_with?('PROXY')
+            if conn_name.start_with?('PROXY')
+              conn_name = conn.gets
+            end
+            puts conn_name
             conn_name = conn_name.split(':').last
             client_request(conn, conn_name)
           else
