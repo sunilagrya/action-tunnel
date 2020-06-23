@@ -30,7 +30,7 @@ class Server
               conn_name = conn.gets
             end
             puts conn_name
-            conn_name = conn_name.split(':').last
+            conn_name = conn_name.split(':').last.strip
             client_request(conn, conn_name)
           else
             http_request(conn, conn_name, path)
@@ -49,7 +49,7 @@ class Server
     end
     data      = conn.read(headers["Content-Length"].to_i)
     body      = parse_data(headers, data)
-    client_id = headers['Host'].split('.').first
+    client_id = headers['Host'].split('.').first.strip
     connect_to_client(method, path, body, client_id, conn, headers['Content-Type'])
   end
 
