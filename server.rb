@@ -72,6 +72,8 @@ class Server
         show_lobster(conn)
       end
     else
+      puts "No client found in the name #{client_id}"
+      puts "Other client name are #{@clients.keys.join(',')}"
       show_lobster(conn)
     end
   end
