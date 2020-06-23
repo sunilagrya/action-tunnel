@@ -61,7 +61,7 @@ class Server
         client = @clients[client_id]
         client.puts(method)
         client.puts(path)
-        client.puts(content_type || 'text/html')
+        client.puts(content_type || get_content_type(path))
         client.puts(body)
         client.puts("end")
         response = client.recvmsg.first
@@ -118,6 +118,16 @@ class Server
       data.chomp.gsub(boundary, '').gsub("Content-Disposition: form-data; name=", '').split('--').join.strip
     else
       data
+    end
+  end
+
+  def get_content_type(path)
+    if path.end_with?('.js')
+      'application/javascript'
+    elsif path.end_with?('.css')
+      'text/css'
+    else
+      'text/html'
     end
   end
 
