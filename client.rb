@@ -81,7 +81,7 @@ class Client
     if @host == 'localhost'
       "Your URL is http://#{@name}.#{@host}:#{@port}"
     else
-      "Your URL is http://#{@name}.#{@host}"
+      "Your URL is http://#{@name}.action-tunnel.ml"
     end
   end
 end

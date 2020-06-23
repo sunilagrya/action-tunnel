@@ -56,6 +56,8 @@ class Server
   def connect_to_client(method, path, body, client_id, conn, content_type)
     if @clients.keys.include?(client_id)
       begin
+        puts "#{method} - #{path} - #{client_id} - #{content_type}"
+        puts "Connection to #{client_id}"
         client = @clients[client_id]
         client.puts(method)
         client.puts(path)
@@ -66,6 +68,7 @@ class Server
         respond_back(conn, 200, response, content_type)
       rescue
         @clients.delete(client_id)
+        puts "Failed to connect to client..."
         show_lobster(conn)
       end
     else
